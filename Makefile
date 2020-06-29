@@ -2,7 +2,7 @@ CXX := g++
 NVCC := nvcc
 PYTHON_BIN_PATH = python
 
-MULTI_SRCS = $(wildcard *.cc) $(wildcard *.cc)
+MULTI_SRCS = $(wildcard multidim_image_augmentation/cc/kernals/*.cc) $(wildcard multidim_image_augmentation/cc/ops/*.cc)
 
 TF_CFLAGS := $(shell $(PYTHON_BIN_PATH) -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_compile_flags()))')
 TF_LFLAGS := $(shell $(PYTHON_BIN_PATH) -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_link_flags()))')
@@ -21,5 +21,7 @@ $(MULTI_TARGET_LIB): $(MULTI_SRCS)
 
 multi_pip_pkg: $(MULTI_TARGET_LIB)
 	./build_pip_pkg.sh make artifacts
-
+	
+clean:
+	rm -f $(MULTI_TARGET_LIB)
 
