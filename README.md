@@ -10,7 +10,8 @@ docker run -it tensorflow/tensorflow:custom-op-ubuntu16 /bin/bash
 2.
 To build:
 ```bash
-  git clone this_repo
+  git clone https://github.com/ardila/custom-op.git
+  cd custom-op/
   ./configure.sh
   bazel build build_pip_pkg
   bazel-bin/build_pip_pkg artifacts
