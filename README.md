@@ -1,18 +1,28 @@
 # HOW TO USE MULTIDIM_IMAGE_AUGMENTATION
-Need to install bazel first [https://bazel.build/]
 
+1.
+Get into docker container
+```
+docker pull tensorflow/tensorflow:custom-op-ubuntu16
+docker run -it tensorflow/tensorflow:custom-op-ubuntu16 /bin/bash
+```
+
+2.
 To build:
 ```bash
+  git clone this_repo
   ./configure.sh
   bazel build build_pip_pkg
   bazel-bin/build_pip_pkg artifacts
 ```
 
+3.
 To install
 ```bash
 pip install artifacts/*.whl
 ```
 
+4.
 To import
 ```python
 import multidim_image_augmentation
