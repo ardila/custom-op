@@ -51,7 +51,7 @@ manylinux2010 compatible. To help you building custom ops on linux, here we prov
 |          |          CPU custom op          |          GPU custom op         |
 |----------|:-------------------------------:|:------------------------------:|
 | TF nightly  |    nightly-custom-op-ubuntu16   | nightly-custom-op-gpu-ubuntu16 |
-| TF >= 2.1   |   2.1.0-custom-op-ubuntu16  |    2.1.0-custom-op-gpu-ubuntu16    |
+| TF >= 2.3   |   2.3.0-custom-op-ubuntu16  |    2.3.0-custom-op-gpu-ubuntu16    |
 | TF 1.5, 2.0 | custom-op-ubuntu16-cuda10.0 |       custom-op-gpu-ubuntu16       |
 | TF <= 1.4   |        custom-op-ubuntu14       |     custom-op-gpu-ubuntu14     |
 
@@ -106,12 +106,12 @@ With Makefile:
 ### Install and Test PIP Package
 Once the pip package has been built, you can install it with,
 ```bash
-pip install artifacts/*.whl
+pip3 install artifacts/*.whl
 ```
 Then test out the pip package
 ```bash
 cd ..
-python -c "import tensorflow as tf;import tensorflow_zero_out;print(tensorflow_zero_out.zero_out([[1,2], [3,4]]))"
+python3 -c "import tensorflow as tf;import tensorflow_zero_out;print(tensorflow_zero_out.zero_out([[1,2], [3,4]]))"
 ```
 And you should see the op zeroed out all input elements except the first one:
 ```bash
@@ -361,8 +361,8 @@ make pip_pkg
 ### Test PIP Package
 Before publishing your pip package, test your pip package.
 ```bash
-pip install artifacts/*.whl
-python -c "import tensorflow as tf;import tensorflow_zero_out;print(tensorflow_zero_out.zero_out([[1,2], [3,4]]))"
+pip3 install artifacts/*.whl
+python3 -c "import tensorflow as tf;import tensorflow_zero_out;print(tensorflow_zero_out.zero_out([[1,2], [3,4]]))"
 ```
 
 
@@ -380,3 +380,4 @@ Here are some issues our users have ran into and possible solutions. Feel free t
 |  Do I need both the toolchain and the docker image? | Yes, you will need both to get the same setup we use to build TensorFlow's official pip package. |
 |  How do I also create a manylinux2010 binary? | You can use [auditwheel](https://github.com/pypa/auditwheel) version 2.0.0 or newer.  |
 |  What do I do if I get `ValueError: Cannot repair wheel, because required library "libtensorflow_framework.so.1" could not be located` or `ValueError: Cannot repair wheel, because required library "libtensorflow_framework.so.2" could not be located` with auditwheel? | Please see [this related issue](https://github.com/tensorflow/tensorflow/issues/31807).  |
+| What do I do if I get `In file included from tensorflow_time_two/cc/kernels/time_two_kernels.cu.cc:21:0: /usr/local/lib/python3.6/dist-packages/tensorflow/include/tensorflow/core/util/gpu_kernel_helper.h:22:10: fatal error: third_party/gpus/cuda/include/cuda_fp16.h: No such file or directory` | Copy the CUDA header files to target directory. `mkdir -p /usr/local/lib/python3.6/dist-packages/tensorflow/include/third_party/gpus/cuda/include && cp -r /usr/local/cuda/targets/x86_64-linux/include/* /usr/local/lib/python3.6/dist-packages/tensorflow/include/third_party/gpus/cuda/include` |

@@ -14,6 +14,7 @@
 # limitations under the License.
 # ==============================================================================
 PLATFORM="$(uname -s | tr 'A-Z' 'a-z')"
+PIP="pip3"
 
 function write_to_bazelrc() {
   echo "$1" >> .bazelrc
@@ -47,7 +48,7 @@ function is_ppc64le() {
 # Check if we are building GPU or CPU ops, default CPU
 while [[ "$TF_NEED_CUDA" == "" ]]; do
   read -p "Do you want to build ops again TensorFlow CPU pip package?"\
-" Y or enter for CPU (tensorflow), N for GPU (tensorflow-gpu). [Y/n] " INPUT
+" Y or enter for CPU (tensorflow-cpu), N for GPU (tensorflow). [Y/n] " INPUT
   case $INPUT in
     [Yy]* ) echo "Build with CPU pip package."; TF_NEED_CUDA=0;;
     [Nn]* ) echo "Build with GPU pip package."; TF_NEED_CUDA=1;;
@@ -88,45 +89,45 @@ done
 if [[ "$TF_NEED_CUDA" == "0" ]]; then
 
   # Check if it's installed
-  if [[ $(pip show tensorflow) == *tensorflow* ]] || [[ $(pip show tf-nightly) == *tf-nightly* ]] ; then
+  if [[ $(${PIP} show tensorflow-cpu) == *tensorflow-cpu* ]] || [[ $(${PIP} show tf-nightly-cpu) == *tf-nightly-cpu* ]] ; then
     echo 'Using installed tensorflow'
   else
     # Uninstall GPU version if it is installed.
-    if [[ $(pip show tensorflow-gpu) == *tensorflow-gpu* ]]; then
+    if [[ $(${PIP} show tensorflow) == *tensorflow* ]]; then
       echo 'Already have gpu version of tensorflow installed. Uninstalling......\n'
-      pip uninstall tensorflow-gpu
-    elif [[ $(pip show tf-nightly-gpu) == *tf-nightly-gpu* ]]; then
+      ${PIP} uninstall tensorflow
+    elif [[ $(${PIP} show tf-nightly) == *tf-nightly* ]]; then
       echo 'Already have gpu version of tensorflow installed. Uninstalling......\n'
-      pip uninstall tf-nightly-gpu
+      ${PIP} uninstall tf-nightly
     fi
     # Install CPU version
-    echo 'Installing tensorflow......\n'
-    pip install tensorflow
+    echo 'Installing tensorflow-cpu......\n'
+    ${PIP} install tensorflow-cpu
   fi
 
 else
 
   # Check if it's installed
-   if [[ $(pip show tensorflow-gpu) == *tensorflow-gpu* ]] || [[ $(pip show tf-nightly-gpu) == *tf-nightly-gpu* ]]; then
-    echo 'Using installed tensorflow-gpu'
+   if [[ $(${PIP} show tensorflow) == *tensorflow* ]] || [[ $(${PIP} show tf-nightly) == *tf-nightly* ]]; then
+    echo 'Using installed tensorflow'
   else
     # Uninstall CPU version if it is installed.
-    if [[ $(pip show tensorflow) == *tensorflow* ]]; then
+    if [[ $(${PIP} show tensorflow-cpu) == *tensorflow-cpu* ]]; then
       echo 'Already have tensorflow non-gpu installed. Uninstalling......\n'
-      pip uninstall tensorflow
-    elif [[ $(pip show tf-nightly) == *tf-nightly* ]]; then
+      ${PIP} uninstall tensorflow
+    elif [[ $(${PIP} show tf-nightly-cpu) == *tf-nightly-cpu* ]]; then
       echo 'Already have tensorflow non-gpu installed. Uninstalling......\n'
-      pip uninstall tf-nightly
+      ${PIP} uninstall tf-nightly
     fi
-    # Install CPU version
-    echo 'Installing tensorflow-gpu .....\n'
-    pip install tensorflow-gpu
+    # Install GPU version
+    echo 'Installing tensorflow .....\n'
+    ${PIP} install tensorflow
   fi
 fi
 
 
-TF_CFLAGS=( $(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_compile_flags()))') )
-TF_LFLAGS="$(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_link_flags()))')"
+TF_CFLAGS=( $(python3 -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_compile_flags()))') )
+TF_LFLAGS="$(python3 -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_link_flags()))')"
 
 write_to_bazelrc "build:cuda --define=using_cuda=true --define=using_cuda_nvcc=true"
 if [[ "$PIP_MANYLINUX2010" == "0" ]]; then
