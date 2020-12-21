@@ -15,5 +15,6 @@ http_archive(
     strip_prefix = "eigen-3.3.7",
     urls = [
         "https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.zip",
+        "http://vertexwahn.de/artifacts/eigen-3.3.7.tar.gz",
     ],
 )
