@@ -25,7 +25,7 @@ from setuptools.dist import Distribution
 
 __version__ = "0.0.2"
 REQUIRED_PACKAGES = [
-    "tensorflow >= 2.1.0",
+    "tensorflow >= 2.3.0",
 ]
 project_name = "multidim_image_augmentation"
 
@@ -76,6 +76,8 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Scientific/Engineering :: Mathematics",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Libraries",

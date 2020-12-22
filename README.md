@@ -5,7 +5,18 @@
 docker pull tensorflow/tensorflow:2.3.0-custom-op-ubuntu16
 docker run -it tensorflow/tensorflow:2.3.0-custom-op-ubuntu16 /bin/bash
 
-# need to install proper version of python via pyenv
+# need to install proper version of python via pyenv. Change this based on what python version you are target
+ing.
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bash_profile
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bash_profile
+echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bash_profile
+exec "$SHELL"
+source ~/.bash_profile
+pyenv install 3.8.6
+pyenv global 3.8.6
+
+
 git clone https://github.com/ardila/custom-op.git
 cd custom-op/
 export TF_NEED_CUDA="0"
@@ -15,9 +26,15 @@ export TF_CUDA_VERSION="10.1"
 bazel build build_pip_pkg
 bazel-bin/build_pip_pkg artifacts
 
+TF_SHARED_LIBRARY_NAME=$(grep -r TF_SHARED_LIBRARY_NAME .bazelrc | awk -F= '{print$2}')
+POLICY_JSON=$(find / -name policy.json)
+sed -i "s/libresolv.so.2\"/libresolv.so.2\", $TF_SHARED_LIBRARY_NAME/g" $POLICY_JSON
+
+auditwheel repair artifacts/multidim_image_augmentation-0.0.2-cp36-cp36m-linux_x86_64.whl --plat manylinux2010_x86_64
+
 
 pip install twine
-twine upload artifacts/*.whl
+twine upload /custom-op/wheelhouse/multidim_image_augmentation-0.0.2-cp36-cp36m-manylinux2010_x86_64.whl
 ```
 The password is from pypi.org
 
