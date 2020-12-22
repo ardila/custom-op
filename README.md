@@ -1,3 +1,28 @@
+
+# How to upload new package to pypi
+
+```
+docker pull tensorflow/tensorflow:2.3.0-custom-op-ubuntu16
+docker run -it tensorflow/tensorflow:2.3.0-custom-op-ubuntu16 /bin/bash
+
+# need to install proper version of python via pyenv
+git clone https://github.com/ardila/custom-op.git
+cd custom-op/
+export TF_NEED_CUDA="0"
+export PIP_MANYLINUX2010="1"
+export TF_CUDA_VERSION="10.1"
+./configure.sh
+bazel build build_pip_pkg
+bazel-bin/build_pip_pkg artifacts
+
+
+pip install twine
+twine upload artifacts/*.whl
+```
+The password is from pypi.org
+
+
+
 # HOW TO USE MULTIDIM_IMAGE_AUGMENTATION
 
 1.
